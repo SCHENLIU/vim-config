@@ -44,8 +44,9 @@ Plugin 'vim-ruby/vim-ruby'
 Plugin 'vim-scripts/Align'
 Plugin 'vim-scripts/greplace.vim'
 Plugin 'vim-scripts/matchit.zip'
-Plugin 'prabirshrestha/asyncomplete.vim'
 Plugin 'rkulla/pydiction'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 call vundle#end()
 
 " ensure ftdetect et al work by including this after the Vundle stuff
@@ -78,6 +79,8 @@ set wildmode=longest,list,full
 
 " Enable basic mouse behavior such as resizing buffers.
 set mouse=a
+set selection=exclusive
+set selectmode=mouse,key
 
 " keyboard shortcuts
 let mapleader = ','
@@ -178,5 +181,8 @@ command! -nargs=0 RemoveConflictingAlignMaps call s:RemoveConflictingAlignMaps()
 silent! autocmd VimEnter * RemoveConflictingAlignMaps
 set autochdir
 set tags=tags;
+set tags+=~/anaconda2/tags
 
-
+"airline
+"let g:airline#extensions#tabline#enabled = 1
+"let g:airline_theme='bubblegum'
