@@ -36,3 +36,5 @@ export LD_LIBRARY_PATH=/data0/mysql/lib/mysql:$LD_LIBRARY_PATH
 
 #Tags
 export PATH="$PATH:/data0/home/shichen/"
+alias maketags='find . -name \*.py -print |xargs python ~/ptags.py'
+alias smaketags='find . -name \*.py -print |xargs sudo python ~/ptags.py'
