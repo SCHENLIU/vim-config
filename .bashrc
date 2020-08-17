@@ -28,7 +28,7 @@ unset __conda_setup
 export PATH="/data0/home/shichen/anaconda2/bin:$PATH"  # commented out by conda initialize
 #export LD_LIBRARY_PATH=/usr/local/cuda/:/usr/local/cuda/lib64/:/data0/home/shichen/anaconda2/lib:/usr/local/hadoop-2.4.0-hdfs/lib/native:/usr/local/jdk1.8.0_131/jre/lib/amd64/server
 
-#export NODE_HOME=~/shichen/node-v14.6.0-linux-x64
+# export NODE_HOME=~/shichen/node-v14.6.0-linux-x64
 #export PATH=$PATH:$NODE_HOME/bin 
 #export NODE_PATH=$NODE_HOME/lib/node_modules
 #export PATH="$PATH:/data0/home/shichen/squashfs-root/usr/bin/"
