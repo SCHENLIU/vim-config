@@ -30,6 +30,7 @@ set nocompatible
 set nobackup
 set noswapfile
 set history=1024
+set ruler
 set autochdir
 set whichwrap=b,s,<,>,[,]
 set nobomb
@@ -109,6 +110,7 @@ nmap <leader>tn :tabnew<cr>
 nmap <leader>tc :tabclose<cr>
 nmap <leader>th :tabp<cr>
 nmap <leader>tl :tabn<cr>
+nmap <leader>nh :nohl<cr>
 nmap <leader>t :!python %<cr>
 
 " ÒÆ¶¯·Ö¸î´°¿Ú
@@ -234,29 +236,29 @@ let g:snipMate = get(g:, 'snipMate', {})
 " ----- Fugitive ----- {{{
 Plugin 'tpope/vim-fugitive'
 " }}}
-" ----- Neocomplete ----- {{{
-Plugin 'Shougo/neocomplete.vim'
-let g:acp_enableAtStartup = 0
-" Use neocomplete.
-let g:neocomplete#enable_at_startup = 1
-" Use smartcase.
-let g:neocomplete#enable_smart_case = 1
-let g:neocomplete#enable_auto_select = 1
-" Enable snipMate compatibility feature.
-let g:neosnippet#enable_snipmate_compatibility = 1
-" Tell Neosnippet about the other snippets
-let g:neosnippet#snippets_directory=$VIM . '/vimfiles/bundle/vim-snippets/snippets'
+ "----- Neocomplete ----- {{{
+"Plugin 'Shougo/neocomplete.vim'
+"let g:acp_enableAtStartup = 0
+ "Use neocomplete.
+"let g:neocomplete#enable_at_startup = 1
+ "Use smartcase.
+"let g:neocomplete#enable_smart_case = 1
+"let g:neocomplete#enable_auto_select = 1
+ "Enable snipMate compatibility feature.
+"let g:neosnippet#enable_snipmate_compatibility = 1
+ "Tell Neosnippet about the other snippets
+"let g:neosnippet#snippets_directory=$VIM . '/vimfiles/bundle/vim-snippets/snippets'
 
-" Enable omni completion.
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-if !exists('g:neocomplete#sources#omni#input_patterns')
-  let g:neocomplete#sources#omni#input_patterns = {}
-endif
-" }}}
+ "Enable omni completion.
+"autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+"autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+"autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+"autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+"autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+"if !exists('g:neocomplete#sources#omni#input_patterns')
+  "let g:neocomplete#sources#omni#input_patterns = {}
+"endif
+ "}}}
 
 filetype on
 call vundle#end()
