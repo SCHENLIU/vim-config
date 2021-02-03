@@ -1,190 +1,343 @@
-" don't bother with vi compatibility
+" Startup {{{
+filetype indent plugin on
+
+augroup vimrcEx
+au!
+
+autocmd FileType text setlocal textwidth=78
+
+augroup END
+
+" vim 文件折叠方式为 marker
+augroup ft_vim
+    au!
+
+    autocmd FileType vim setlocal foldmethod=marker
+
+    " 打开文件总是定位到上次编辑的位置
+    autocmd BufReadPost *
+      \ if line("'\"") > 1 && line("'\"") <= line("$") |
+      \   exe "normal! g`\"" |
+      \ endif
+
+    augroup END
+augroup END
+" }}}
+
+" General {{{
 set nocompatible
+set nobackup
+set noswapfile
+set history=1024
+set ruler
+set autochdir
+set whichwrap=b,s,<,>,[,]
+set nobomb
+set backspace=indent,eol,start whichwrap+=<,>,[,]
+" Vim 的默认寄存器和系统剪贴板共享
+set clipboard+=unnamed
+" }}}
 
-" enable syntax highlighting
-syntax enable
+" Lang & Encoding {{{
+set fileencodings=utf-8,gbk2312,gbk,gb18030,cp936
+set encoding=utf-8
+" }}}
 
-" configure Vundle
-filetype on " without this vim emits a zero exit status, later, because of :ft off
+" GUI & Color {{{
+set cursorline
+set hlsearch
+set relativenumber number
+" 分割出来的窗口位于当前窗口下边/右边
+set splitbelow
+set splitright
+
+colorscheme morning
+
+" set nolist
+set listchars=trail:~,extends:>,precedes:<
+
+" }}}
+
+" Format {{{
+set autoindent
+set smartindent
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set expandtab
+set foldmethod=indent
+set foldlevel=10
+syntax on
+" }}}
+
+" Keymap {{{
+let mapleader=","
+
+nmap <leader>s :source $MYVIMRC<cr>
+nmap <leader>e :e $MYVIMRC<cr>
+
+nmap <leader>tn :tabnew<cr>
+nmap <leader>tc :tabclose<cr>
+nmap <leader>th :tabp<cr>
+nmap <leader>tl :tabn<cr>
+nmap <leader>nh :nohl<cr>
+
+" 移动分割窗口
+"nmap <C-j> <C-W>j
+"nmap <C-k> <C-W>k
+"nmap <C-h> <C-W>h
+"nmap <C-l> <C-W>l
+
+" 正常模式下 alt+j,k,h,l 调整分割窗口大小
+nnoremap <C-j> :resize -5<cr>
+nnoremap <C-k> :resize +5<cr>
+nnoremap <C-h> :vertical resize +5<cr>
+nnoremap <C-l> :vertical resize -5<cr>
+
+
+" 插入模式移动光标 alt + 方向键
+inoremap <M-j> <Down>
+inoremap <M-k> <Up>
+inoremap <M-h> <left>
+inoremap <M-l> <Right>
+
+" IDE like delete
+inoremap <C-BS> <Esc>bdei
+
+nnoremap vv ^vg_
+" 转换当前行为大写
+inoremap <C-u> <esc>mzgUiw`za
+" 命令模式下的行首尾
+cnoremap <C-a> <home>
+cnoremap <C-e> <end>
+
+nnoremap <F2> :setlocal number!<cr>
+nnoremap <leader>w :set wrap!<cr>
+
+imap <C-v> "+gP
+vmap <C-c> "+y
+vnoremap <BS> d
+vnoremap <C-C> "+y
+vnoremap <C-Insert> "+y
+imap <C-V> "+gP
+map <S-Insert> "+gP
+cmap <C-V> <C-R>+
+cmap <S-Insert> <C-R>+
+
+exe 'inoremap <script> <C-V>' paste#paste_cmd['i']
+exe 'vnoremap <script> <C-V>' paste#paste_cmd['v']
+
+" 打开当前目录 windows
+nmap <silent> <leader>ex :!start explorer %:p:h<CR>
+
+" 打开当前目录CMD
+nmap <silent> <leader>cmd :!start cmd /k cd %:p:h<cr>
+" 打印当前时间
+nmap <F3> a<C-R>=strftime("%Y-%m-%d %a %I:%M %p")<CR><Esc>
+
+let NERDTreeBookmarksFile = $VIM . '/NERDTreeBookmarks'
+
+" 复制当前文件/路径到剪贴板
+nmap ,fn :let @*=substitute(expand("%"), "/", "\\", "g")<CR>
+nmap ,fp :let @*=substitute(expand("%:p"), "/", "\\", "g")<CR>
+
+"设置切换Buffer快捷键"
+nnoremap <C-left> :bn<CR>
+nnoremap <C-right> :bp<CR>
+
+" }}}
+
+" Plugin {{{
 filetype off
-set rtp+=~/.vim/bundle/Vundle.vim
 
+set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
+
+" ----- Vundle ----- {{{
 Plugin 'VundleVim/Vundle.vim'
-Plugin 'airblade/vim-gitgutter'
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'austintaylor/vim-indentobject'
-Plugin 'christoomey/vim-tmux-navigator'
-Plugin 'kchmck/vim-coffee-script'
-Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'leafgarland/typescript-vim'
-Plugin 'majutsushi/tagbar'
-Plugin 'rking/ag.vim'
-Plugin 'garbas/vim-snipmate'
-Plugin 'MarcWeber/vim-addon-mw-utils'
-Plugin 'tomtom/tlib_vim'
-Plugin 'nathanaelkane/vim-indent-guides'
+" }}}
+" ----- NerdTree ----- {{{
 Plugin 'scrooloose/nerdtree'
-Plugin 'scrooloose/syntastic'
-Plugin 'slim-template/vim-slim'
-Plugin 'tpope/vim-bundler'
-Plugin 'tpope/vim-commentary'
-Plugin 'tpope/vim-cucumber'
-Plugin 'tpope/vim-dispatch'
-Plugin 'tpope/vim-endwise'
+Plugin 'Xuyuanp/nerdtree-git-plugin'
+
+let NERDTreeIgnore=['.idea', '.vscode', 'node_modules', '*.pyc']
+let NERDTreeShowHidden = 1
+let NERDTreeBookmarksFile = $VIM . '/NERDTreeBookmarks'
+let NERDTreeMinimalUI = 1
+let NERDTreeBookmarksSort = 1
+let NERDTreeShowLineNumbers = 0
+let NERDTreeShowBookmarks = 1
+let g:NERDTreeWinPos = 'left'
+let g:NERDTreeDirArrowExpandable = '+'
+let g:NERDTreeDirArrowCollapsible = '-'
+
+let g:NERDTreeGitStatusIndicatorMapCustom = {
+                \ 'Modified'  :'✹',
+                \ 'Staged'    :'✚',
+                \ 'Untracked' :'✭',
+                \ 'Renamed'   :'➜',
+                \ 'Unmerged'  :'═',
+                \ 'Deleted'   :'✖',
+                \ 'Dirty'     :'✗',
+                \ 'Ignored'   :'☒',
+                \ 'Clean'     :'✔︎',
+                \ 'Unknown'   :'?',
+                \ }
+
+nmap <leader>n :NERDTreeToggle <cr>
+nmap <leader>m :NERDTreeFind <cr>
+" if exists('g:NERDTreeWinPos')
+"     autocmd vimenter * NERDTree D:\repo
+" endif
+" }}}
+" ----- Multiple-cursors ----- {{{
+Plugin 'terryma/vim-multiple-cursors'
+" }}}
+" ----- Tabular ----- {{{
+Plugin 'godlygeek/tabular'
+" }}}
+" ----- Markdown ----- {{{
+Plugin 'plasticboy/vim-markdown'
+" }}}
+" ----- Ctrlp ----- {{{
+Plugin 'kien/ctrlp.vim'
+let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:10'
+set wildignore+=*\\.git\\*,*\\tmp\\*,*.swp,*.zip,*.exe,*.pyc
+nmap <leader>b :CtrlPBuffer<cr>
+
+" }}}
+" ----- Nerdcommenter ----- {{{
+Plugin 'scrooloose/nerdcommenter'
+" }}}
+" ----- UltiSnips ----- {{{
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-m>"
+
+" }}}
+" ----- Fugitive ----- {{{
 Plugin 'tpope/vim-fugitive'
-Plugin 'tpope/vim-pastie'
-Plugin 'tpope/vim-ragtag'
-Plugin 'tpope/vim-rails'
-Plugin 'tpope/vim-repeat'
-Plugin 'tpope/vim-surround'
-Plugin 'tpope/vim-unimpaired'
-Plugin 'tpope/vim-vividchalk'
-Plugin 'vim-ruby/vim-ruby'
-Plugin 'vim-scripts/Align'
-Plugin 'vim-scripts/greplace.vim'
-Plugin 'vim-scripts/matchit.zip'
-Plugin 'rkulla/pydiction'
+" }}}
+
+
+" ----- Fugitive ----- {{{
+Plugin 'airblade/vim-gitgutter'
+" }}}
+
+" ----- Fzf ----- {{{
+Plugin 'junegunn/fzf.vim'
+Plugin 'junegunn/fzf', { 'do': { -> fzf#install() } }
+"" }}}
+" ----- Asyncrun ----- {{{
+"Plugin 'skywind3000/asyncrun.vim'
+let g:asyncrun_open = 8
+" }}}
+" ----- AutoPirs ----- {{{
+Plugin 'jiangmiao/auto-pairs'
+" }}}
+" ----- REPL ----- {{{
+Plugin 'sillybun/vim-repl'
+let g:repl_program = {
+            \   'python': 'ipython3',
+            \   'default': 'zsh',
+            \   'r': 'R',
+            \   'lua': 'lua',
+            \   }
+
+let g:repl_predefine_python = {
+            \   'numpy': 'import numpy as np',
+            \   'matplotlib': 'from matplotlib import pyplot as plt'
+            \   }
+let g:repl_cursor_down = 1
+let g:repl_python_automerge = 1
+let g:repl_ipython_version = '7'
+nnoremap <leader>q :REPLToggle<Cr>
+autocmd Filetype python nnoremap <F12> <Esc>:REPLDebugStopAtCurrentLine<Cr>
+autocmd Filetype python nnoremap <F10> <Esc>:REPLPDBN<Cr>
+autocmd Filetype python nnoremap <F11> <Esc>:REPLPDBS<Cr>
+let g:repl_position = 3
+
+" }}}
+" ----- Rainbow Parentheses ----- {{{
+Plugin 'kien/rainbow_parentheses.vim'
+" }}}
+" ----- Omni Completion ----- {{{
+Plugin 'ervandew/supertab'
+let g:SuperTabDefaultCompletionType = "context"
+let g:SuperTabClosePreviewOnPopupClose = 1
+autocmd FileType *
+  \ if &omnifunc != '' |
+  \ call SuperTabChain(&omnifunc, "<c-x><c-]>") |
+  \ endif
+set ofu=syntaxcomplete#Complete
+"function! OpenCompletion()
+    "if !pumvisible() && v:char == '.'
+        "call feedkeys("\<C-x>\<C-o>", "n")
+    "endif
+"endfunction
+
+"autocmd InsertCharPre * call OpenCompletion()
+"" }}}
+" ----- Guten Tags ----- {{{
+Plugin 'ludovicchabant/vim-gutentags'
+let g:gutentags_project_root = ['.root', '.svn', '.git', '.project']
+let g:gutentags_ctags_tagfile = '.tags'
+
+let s:vim_tags = expand('~/.cache/tags')
+let g:gutentags_cache_dir = s:vim_tags
+if !isdirectory(s:vim_tags)
+       silent! call mkdir(s:vim_tags, 'p')
+   endif
+set tags+=~/.cache/tags/python.tag
+
+" }}}
+" ----- vim-color ----- {{{
+"Plugin 'altercation/vim-colors-solarized'
+"syntax enable
+"set background=dark
+"set t_Co=256
+""colorscheme solarized
+"" }}}
+" ----- Airline ------ {{{
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+let g:airline_theme='papercolor'
+"" }}}
+
+filetype on
 call vundle#end()
+" }}}
 
-" ensure ftdetect et al work by including this after the Vundle stuff
-filetype plugin indent on
-
-set autoindent
-set autoread                                                 " reload files when changed on disk, i.e. via `git checkout`
-set backspace=2                                              " Fix broken backspace in some setups
-set backupcopy=yes                                           " see :help crontab
-set clipboard=unnamed                                        " yank and paste with the system clipboard
-set directory-=.                                             " don't store swapfiles in the current directory
-set encoding=utf-8
-set expandtab                                                " expand tabs to spaces
-set ignorecase                                               " case-insensitive search
-set incsearch                                                " search as you type
-set laststatus=2                                             " always show statusline
-set list                                                     " show trailing whitespace
-"set listchars=tab:▸\ ,trail:▫
-set number                                                   " show line numbers
-set ruler                                                    " show where you are
-set scrolloff=3                                              " show context above/below cursorline
-set shiftwidth=2                                             " normal mode indentation commands use 2 spaces
-set showcmd
-set smartcase                                                " case-sensitive search if any caps
-set softtabstop=2                                            " insert mode tab and backspace use 2 spaces
-set tabstop=8                                                " actual tabs occupy 8 characters
-set wildignore=log/**,node_modules/**,target/**,tmp/**,*.rbc
-set wildmenu                                                 " show a navigable menu for tab completion
-set wildmode=longest,list,full
-
-" Enable basic mouse behavior such as resizing buffers.
-set mouse=a
-set selection=exclusive
-set selectmode=mouse,key
-
-" keyboard shortcuts
-let mapleader = ','
-noremap <C-h> <C-w>h
-noremap <C-j> <C-w>j
-noremap <C-k> <C-w>k
-noremap <C-l> <C-w>l
-noremap <leader>l :Align
-nnoremap <leader>a :Ag<space>
-nnoremap <leader>b :CtrlPBuffer<CR>
-nnoremap <leader>d :NERDTreeToggle<CR>
-nnoremap <leader>f :NERDTreeFind<CR>
-nnoremap <leader>t :CtrlP<CR>
-nnoremap <leader>T :CtrlPClearCache<CR>:CtrlP<CR>
-nnoremap <leader>] :TagbarToggle<CR>
-nnoremap <leader><space> :call whitespace#strip_trailing()<CR>
-nnoremap <leader>g :GitGutterToggle<CR>
-noremap <silent> <leader>V :source ~/.vimrc<CR>:filetype detect<CR>:exe ":echo 'vimrc reloaded'"<CR>
-
-" in case you forgot to sudo
-cnoremap w!! %!sudo tee > /dev/null %
-
-" plugin settings
-let g:ctrlp_match_window = 'order:ttb,max:20'
-let g:NERDSpaceDelims=1
-let g:gitgutter_enabled = 0
-
-"TAG AUTO OPEN
-let Tlist_Auto_Open=1
-
-"pydiction
-let g:pydiction_location = '~/.vim/bundle/pydiction/complete-dict'
-let g:pydiction_menu_height = 5
-
-
-" Use The Silver Searcher https://github.com/ggreer/the_silver_searcher
-if executable('ag')
-  " Use Ag over Grep
-  set grepprg=ag\ --nogroup\ --nocolor
-
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+" Quick Run {{{
+map <leader>t :call CompileRun()<CR>
+    func! CompileRun()
+        exec "w"
+if &filetype == 'cpp'
+            exec "!g++ %-o %<"
+            exec "!time ./%<"
+elseif &filetype == 'sh'
+            :!time bash %
+elseif &filetype == 'python'
+            "exec "AsyncRun time python %"
+            exec "!time python %"
 endif
+    endfunc
+" }}}
 
-" fdoc is yaml
-autocmd BufRead,BufNewFile *.fdoc set filetype=yaml
-" md is markdown
-autocmd BufRead,BufNewFile *.md set filetype=markdown
-autocmd BufRead,BufNewFile *.md set spell
-" extra rails.vim help
-autocmd User Rails silent! Rnavcommand decorator      app/decorators            -glob=**/* -suffix=_decorator.rb
-autocmd User Rails silent! Rnavcommand observer       app/observers             -glob=**/* -suffix=_observer.rb
-autocmd User Rails silent! Rnavcommand feature        features                  -glob=**/* -suffix=.feature
-autocmd User Rails silent! Rnavcommand job            app/jobs                  -glob=**/* -suffix=_job.rb
-autocmd User Rails silent! Rnavcommand mediator       app/mediators             -glob=**/* -suffix=_mediator.rb
-autocmd User Rails silent! Rnavcommand stepdefinition features/step_definitions -glob=**/* -suffix=_steps.rb
-" automatically rebalance windows on vim resize
-autocmd VimResized * :wincmd =
-
-" Fix Cursor in TMUX
-if exists('$TMUX')
-  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-else
-  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-endif
-
-" Don't copy the contents of an overwritten selection.
-vnoremap p "_dP
-
-" Go crazy!
-set nocursorline " don't highlight current line
-
-" keyboard shortcuts
-inoremap jj <ESC>
-
-" highlight search
-"set hlsearch
-"nmap <leader>hl :let @/ = ""<CR>
-
-set cursorline
-
-" Disambiguate ,a & ,t from the Align plugin, making them fast again.
-"
-" This section is here to prevent AlignMaps from adding a bunch of mappings
-" that interfere with the very-common ,a and ,t mappings. This will get run
-" at every startup to remove the AlignMaps for the *next* vim startup.
-"
-" If you do want the AlignMaps mappings, remove this section, remove
-" ~/.vim/bundle/Align, and re-run rake in maximum-awesome.
-function! s:RemoveConflictingAlignMaps()
-  if exists("g:loaded_AlignMapsPlugin")
-    AlignMapsClean
-  endif
+" Function {{{
+" Remove trailing whitespace when writing a buffer, but not for diff files.
+" From: Vigil
+" @see http://blog.bs2.to/post/EdwardLee/17961
+function! RemoveTrailingWhitespace()
+    if &ft != "diff"
+        let b:curcol = col(".")
+        let b:curline = line(".")
+        silent! %s/\s\+$//
+        silent! %s/\(\s*\n\)\+\%$//
+        call cursor(b:curline, b:curcol)
+    endif
 endfunction
-command! -nargs=0 RemoveConflictingAlignMaps call s:RemoveConflictingAlignMaps()
-silent! autocmd VimEnter * RemoveConflictingAlignMaps
-set autochdir
-set tags=tags;
-set tags+=~/anaconda2/tags
-
-"airline
-"let g:airline#extensions#tabline#enabled = 1
-"let g:airline_theme='bubblegum'
-
-let g:airline#themes#cool#palette = {}
+autocmd BufWritePre * call RemoveTrailingWhitespace()
+" }}}
