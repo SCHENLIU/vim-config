@@ -51,7 +51,7 @@ set relativenumber number
 set splitbelow
 set splitright
 
-colorscheme morning
+"colorscheme morning
 
 " set nolist
 set listchars=trail:~,extends:>,precedes:<
@@ -294,12 +294,12 @@ set tags+=~/.cache/tags/python.tag
 
 " }}}
 " ----- vim-color ----- {{{
-"Plugin 'altercation/vim-colors-solarized'
-"syntax enable
-"set background=dark
-"set t_Co=256
-""colorscheme solarized
-"" }}}
+Plugin 'altercation/vim-colors-solarized'
+syntax enable
+let g:solarized_termcolors=256
+set background=light
+colorscheme solarized
+" }}}
 " ----- Airline ------ {{{
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
